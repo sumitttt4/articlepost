@@ -1,0 +1,2 @@
+import { apiError, userDatabase } from "@/lib/server";
+export async function GET(){try{const {db,userId}=await userDatabase();const {data,error}=await db.from("archive_entries").select("id,title,url,content,created_at").eq("user_id",userId).order("created_at",{ascending:false}).limit(100);if(error)throw error;return Response.json({articles:data},{headers:{"Cache-Control":"no-store"}});}catch(error){return apiError(error);}}

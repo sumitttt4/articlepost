@@ -1,0 +1,15 @@
+{
+ "name":"polar-publish","version":"0.1.0","private":true,
+ "engines":{"node":">=22.12.0"},
+ "workspaces":["apps/*","packages/*"],
+ "scripts":{
+  "dev":"npm run dev --workspace @polar/web",
+  "build":"npm run build --workspace @polar/web",
+  "typecheck":"npm run typecheck --workspace @polar/web && npm run typecheck --workspace @polar/extension",
+  "test":"npm run test --workspace @polar/web",
+  "test:e2e":"npm run test:e2e --workspace @polar/web",
+  "extension:dev":"npm run dev --workspace @polar/extension",
+  "extension:build":"npm run build --workspace @polar/extension"
+ },
+ "overrides":{"postcss":"^8.5.30"}
+}

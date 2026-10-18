@@ -17,3 +17,15 @@ build/
 Thumbs.db
 .idea/
 .vscode/
+
+# Next.js / WXT
+.next/
+.wxt/
+.output/
+*.tsbuildinfo
+.env*
+!.env.example
+
+# Browser tests
+test-results/
+playwright-report/

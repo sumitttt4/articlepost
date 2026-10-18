@@ -1,0 +1,111 @@
+/* Shared workspace tokens. Legacy containers retain their names during the
+   Kumo migration; new controls use Kumo's semantic color tokens. */
+html[data-mode="dark"] {
+ --text-color-kumo-success: #6ee7a0;
+ --color-kumo-success-tint: #103621;
+ --text-color-kumo-warning: #facc15;
+ --color-kumo-warning-tint: #362b0d;
+ --text-color-kumo-info: #93bbff;
+ --color-kumo-info-tint: #172d50;
+ --text-color-kumo-danger: #fda4af;
+ --color-kumo-danger-tint: #401a24;
+}
+html:root {
+ --background: #09090b;
+ --foreground: #f4f4f5;
+ --card: #111114;
+ --card-foreground: #f4f4f5;
+ --popover: #141417;
+ --popover-foreground: #f4f4f5;
+ --primary: #f4f4f5;
+ --primary-foreground: #09090b;
+ --secondary: #18181c;
+ --secondary-foreground: #e4e4e7;
+ --muted: #18181c;
+ --muted-foreground: #a1a1aa;
+ --accent: #222228;
+ --accent-foreground: #fafafa;
+ --destructive: #ef4444;
+ --border: #1f1f24;
+ --input: #30303b;
+ --ring: #3b82f6;
+ --radius: .625rem;
+ --sidebar: #101012;
+ --sidebar-foreground: #f4f4f5;
+ --sidebar-primary: #f4f4f5;
+ --sidebar-primary-foreground: #09090b;
+ --sidebar-accent: #222226;
+ --sidebar-accent-foreground: #f4f4f5;
+ --sidebar-border: #1f1f24;
+ --sidebar-ring: #3b82f6;
+}
+@theme inline {
+ --font-sans: var(--font-geist);
+ --font-mono: var(--font-geist);
+ --color-background: var(--background);
+ --color-foreground: var(--foreground);
+ --color-card: var(--card);
+ --color-card-foreground: var(--card-foreground);
+ --color-popover: var(--popover);
+ --color-popover-foreground: var(--popover-foreground);
+ --color-primary: var(--primary);
+ --color-primary-foreground: var(--primary-foreground);
+ --color-secondary: var(--secondary);
+ --color-secondary-foreground: var(--secondary-foreground);
+ --color-muted: var(--muted);
+ --color-muted-foreground: var(--muted-foreground);
+ --color-accent: var(--accent);
+ --color-accent-foreground: var(--accent-foreground);
+ --color-destructive: var(--destructive);
+ --color-border: var(--border);
+ --color-input: var(--input);
+ --color-ring: var(--ring);
+ --color-sidebar: var(--sidebar);
+ --color-sidebar-foreground: var(--sidebar-foreground);
+ --color-sidebar-primary: var(--sidebar-primary);
+ --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+ --color-sidebar-accent: var(--sidebar-accent);
+ --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+ --color-sidebar-border: var(--sidebar-border);
+ --color-sidebar-ring: var(--sidebar-ring);
+ --radius-sm: calc(var(--radius) - 4px);
+ --radius-md: calc(var(--radius) - 2px);
+ --radius-lg: var(--radius);
+ --radius-xl: calc(var(--radius) + 4px);
+}
+/* Legacy role names intentionally all resolve to the same family. */
+html {
+ --font-inter: var(--font-geist);
+ --font-editorial: var(--font-geist);
+}
+body, button, input, textarea, select, kbd, code, pre,
+.publication-avatar, .platform-icon, .mini-medium,
+.mini-platform, .medium,
+.brand, .brand-light, .score, .score *, .date-cell,
+.heading-eyebrow, .eyebrow, .badge, .nav-count,
+.table-footer, .writing-meta, .serp-slug, .canonical-preview,
+.keyword-chip, .canonical-url, .note-card footer > span,
+.title-input, .subtitle-input, .body-editor, .prose-article,
+.prose-article h2, .prose-article h3, .platform-preview > h3,
+.notes-preview p, .note-card > p, .inspiration-quote blockquote,
+.inspiration-quote > span, .large-score, .large-score small,
+.paywall-divider, .inspector h3 > span, .seo-overview-score > span,
+.field input:read-only, .beta-tag, .library-tabs > button > span,
+.command-results > p, .distribution-intro > .badge,
+.section-heading h2 > span, .format-toolbar > button {
+ font-family: var(--font-geist), sans-serif !important;
+ font-variant-numeric: tabular-nums;
+}
+.plan-card a { color: #cbcbcf; }
+.inspiration-quote blockquote { color: #dadae8; }
+.title-input { font-size: 32px; line-height: 1.25; letter-spacing: -1px; }
+.body-editor, .prose-article { font-size: 15px; line-height: 1.95; }
+.prose-article h2 { font-size: 23px; }
+.prose-article h3 { font-size: 19px; }
+.note-card > p, .notes-preview p { font-size: 18px; line-height: 1.75; }
+.platform-preview .prose-article { font-size: 13px; }
+.platform-preview .prose-article h2 { font-size: 19px; }
+@media (max-width: 767px) {
+ .title-input { font-size: 29px; }
+ .body-editor, .field input, .field textarea, .field select { font-size: 16px; }
+}
