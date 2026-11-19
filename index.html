@@ -1,0 +1,135 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Habit Tracker Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Two free Google Sheets habit trackers. Copy one and make it yours.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: left-aligned hero with a live tickable week grid beside the headline; trackers as two wide rows; steps as a real sequence. One bold element: the grid. */
+:root{--bg:#e9f0ff;--surface:#f7faff;--ink:#0e1a3a;--muted:#4b5a80;--line:#c7d4f2;--cobalt:#2b45f0;--cobalt-fg:#fff;--sun:#ffd447;--sun-ink:#3a2c00;
+--display:'Bricolage Grotesque',system-ui,sans-serif;--body:'Figtree',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1126;--surface:#111a38;--ink:#eaf0ff;--muted:#9fb0dc;--line:#24315e;--cobalt:#8394ff;--cobalt-fg:#0a1126;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1126;--surface:#111a38;--ink:#eaf0ff;--muted:#9fb0dc;--line:#24315e;--cobalt:#8394ff;--cobalt-fg:#0a1126;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--body);padding-block:clamp(32px,6vw,72px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,9vw,104px)}
+h1,h2,h3,p,ol{margin:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;letter-spacing:-.025em;line-height:1.05}
+h1{font-size:clamp(2.6rem,7.5vw,5rem);font-weight:800}
+h2{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:700}
+h3{font-size:1.5rem;font-weight:700;letter-spacing:-.015em}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,64px);align-items:center}
+.hero p.lead{margin-top:20px;font-size:1.15rem;color:var(--muted);max-width:34ch}
+.hero .go{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;font:600 1rem var(--body);text-decoration:none;border:2px solid var(--cobalt);transition:transform .15s ease,background-color .15s ease}
+.btn.solid{background:var(--cobalt);color:var(--cobalt-fg)}
+.btn.line{color:var(--ink);border-color:var(--ink)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,.cell:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+/* live grid */
+.board{background:var(--surface);border-radius:20px;padding:clamp(14px,3vw,24px);box-shadow:0 0 0 2px var(--ink);min-width:0}
+.board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.board-head b{font:700 1.1rem var(--display)}
+.board-head span{color:var(--muted);font-size:.9rem}
+.days,.rowg{display:grid;grid-template-columns:minmax(76px,1.3fr) repeat(7,minmax(0,1fr)) 30px;gap:6px;align-items:center}
+.days{color:var(--muted);font-size:.8rem;text-align:center;margin-bottom:6px}
+.days i{font-style:normal}
+.rowg{margin-top:6px}
+.name{font-weight:600;font-size:.92rem;overflow-wrap:anywhere}
+.cell{appearance:none;border:2px solid var(--line);background:transparent;border-radius:10px;aspect-ratio:1;width:100%;padding:0;cursor:pointer;display:grid;place-items:center;color:var(--cobalt-fg);transition:background-color .12s ease,border-color .12s ease}
+.cell[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt)}
+.cell svg{width:60%;height:60%;opacity:0;transform:scale(.6);transition:opacity .12s ease,transform .15s ease}
+.cell[aria-pressed="true"] svg{opacity:1;transform:none}
+.cnt{font:700 .9rem var(--display);text-align:right;color:var(--muted)}
+.cnt.full{color:var(--sun-ink);background:var(--sun);border-radius:6px;text-align:center;padding:1px 0}
+.hint{margin-top:14px;color:var(--muted);font-size:.88rem}
+/* trackers */
+.pick{display:flex;flex-direction:column;gap:28px}
+.pick ul{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
+.pick li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 32px;align-items:center;padding:28px 0;border-bottom:2px solid var(--ink)}
+.pick li p{color:var(--muted);margin-top:6px;max-width:44ch}
+.pick .acts{display:flex;flex-wrap:wrap;gap:10px}
+/* steps */
+.how{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px)}
+.how ol{list-style:none;padding:0;display:flex;flex-direction:column;gap:28px;counter-reset:s}
+.how li{counter-increment:s;display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px}
+.how li::before{content:counter(s);font:800 3rem/0.9 var(--display);color:var(--cobalt)}
+.how strong{font:700 1.2rem var(--display);display:block;letter-spacing:-.01em}
+.how li span{color:var(--muted)}
+.how .sub{margin-top:14px;color:var(--muted);max-width:30ch}
+@media (max-width:760px){.hero,.how{grid-template-columns:minmax(0,1fr)}.pick li{grid-template-columns:minmax(0,1fr)}.days,.rowg{grid-template-columns:minmax(56px,1.2fr) repeat(7,minmax(0,1fr)) 24px;gap:4px}.name{font-size:.8rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1>Tick it off. Every day.</h1>
+      <p class="lead">Two free habit trackers built in Google Sheets. Copy one, and it is yours.</p>
+      <div class="go">
+        <a class="btn solid" href="#trackers">Choose a tracker</a>
+        <a class="btn line" href="#how">How it works</a>
+      </div>
+    </div>
+    <div class="board" role="group" aria-label="Sample habit grid, tap a square to try it">
+      <div class="board-head"><b>Sample week</b><span id="total"></span></div>
+      <div class="days" aria-hidden="true"><span></span><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i><i>S</i><span></span></div>
+      <div id="rows"></div>
+      <p class="hint">Tap a square to try it. A full row turns yellow.</p>
+    </div>
+  </header>
+
+  <section class="pick" id="trackers" aria-labelledby="t">
+    <h2 id="t">Pick a tracker</h2>
+    <ul>
+      <li>
+        <div><h3>Habit Tracker 1</h3><p>Preview the sheet first, or copy it straight into your Google Drive.</p></div>
+        <div class="acts">
+          <a class="btn solid" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1bT3-MnnLlZ93-uzOoHrTgywIuSnwQYv1YPNXg-jysM4/copy">Make a copy</a>
+          <a class="btn line" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1bT3-MnnLlZ93-uzOoHrTgywIuSnwQYv1YPNXg-jysM4/edit?usp=drivesdk">Preview</a>
+        </div>
+      </li>
+      <li>
+        <div><h3>Habit Tracker 2</h3><p>A second layout. Preview it, then copy the one you like better.</p></div>
+        <div class="acts">
+          <a class="btn solid" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/14SsrDNrf8RZ8dM6tVden-qJczts8v2biXJDsv9GN7wI/copy">Make a copy</a>
+          <a class="btn line" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/14SsrDNrf8RZ8dM6tVden-qJczts8v2biXJDsv9GN7wI/edit?usp=drivesdk">Preview</a>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="how" id="how" aria-labelledby="h">
+    <div>
+      <h2 id="h">Start in three steps</h2>
+      <p class="sub">Always track in your own copy. The original stays clean for the next person.</p>
+    </div>
+    <ol>
+      <li><div><strong>Download the Google Sheets app</strong><span>Get it from the Play Store or App Store and sign in with Google.</span></div></li>
+      <li><div><strong>Open either habit tracker link</strong><span>Tap Preview on the tracker you like.</span></div></li>
+      <li><div><strong>Make a copy and use the copy</strong><span>Tap Make a copy, or choose File, then Make a copy inside the sheet.</span></div></li>
+    </ol>
+  </section>
+</div>
+<script>
+(function(){
+var habits=[["Water",[1,1,1,1,1,1,0]],["Walk",[1,0,1,1,0,1,0]],["Read",[1,1,0,1,1,0,0]],["Sleep early",[0,1,1,1,0,1,0]]];
+var rows=document.getElementById('rows'),total=document.getElementById('total');
+var ck='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
+var D=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+habits.forEach(function(h,r){
+  var row=document.createElement('div');row.className='rowg';
+  var n=document.createElement('span');n.className='name';n.textContent=h[0];row.appendChild(n);
+  h[1].forEach(function(v,d){
+    var b=document.createElement('button');b.type='button';b.className='cell';
+    b.setAttribute('aria-pressed',v?'true':'false');b.setAttribute('aria-label',h[0]+' '+D[d]);b.innerHTML=ck;
+    b.onclick=function(){h[1][d]=h[1][d]?0:1;b.setAttribute('aria-pressed',h[1][d]?'true':'false');upd()};
+    row.appendChild(b)});
+  var c=document.createElement('span');c.className='cnt';c.id='c'+r;row.appendChild(c);
+  rows.appendChild(row)});
+function upd(){var t=0;habits.forEach(function(h,r){var s=h[1].reduce(function(a,b){return a+b},0);t+=s;
+  var c=document.getElementById('c'+r);c.textContent=s;c.className='cnt'+(s===7?' full':'')});
+  total.textContent=t+' of '+habits.length*7+' done'}
+upd();
+})();
+</script>
+</body></html>
